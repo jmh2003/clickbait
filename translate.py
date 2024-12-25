@@ -11,7 +11,7 @@ def translate(text):
     translate_text = pipeline(text)[0]['translation_text']
     return translate_text
 
-txt='我是中国人，那么你妈妈是什么目前杰青'
+txt='我是中国人，那么你妈妈是什么杰青'
 trantxt=translate(txt)
 print(trantxt)
 
