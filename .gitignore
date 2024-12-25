@@ -2,6 +2,12 @@
 __pycache__/
 *.py[cod]
 *$py.class
+zh-en/
+
+# Large files
+translate-model/
+model_cache/
+test_data/*.model
 
 # C extensions
 *.so
