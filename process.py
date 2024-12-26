@@ -138,7 +138,9 @@ def process_excel_files():
     tokenizer, model, device = init_translator()
     print(f"使用设备: {device}")
     
-    directory = "test_data"
+    # directory = "test_data"
+    # directory = "data_backup"
+    directory = "news"
     # 过滤临时文件
     excel_files = [f for f in os.listdir(directory) 
                   if f.endswith('.xlsx') and not f.startswith('~$')]
