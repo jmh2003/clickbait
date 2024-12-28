@@ -280,7 +280,7 @@ def main():
     fig.tight_layout()
     plt.savefig('analysis_result.png', dpi=300, bbox_inches='tight')
     # 显示图形
-    plt.show()
+    # plt.show()
 
     # 筛选出 results 为 "标题党" 的标题
     clickbait_titles = [(item['original_title'],item['url']) for item in final_results if item.get('results') == "标题党"]
