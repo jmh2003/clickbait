@@ -74,15 +74,38 @@ def train_and_predict_single_model(model_name, model_class, X_train, X_test, y_t
         # 评估模型
         print("\n评估模型...")
         y_pred = model.predict(X_test)
-        accuracy = accuracy_score(y_test, y_pred)
-        print(f"{model_name} 准确率:", accuracy_score(y_test, y_pred))
-        print(f"{model_name} 分类报告:")
-        print(classification_report(y_test, y_pred))
-        report = classification_report(y_test, y_pred, output_dict=True)
-        precision = report['weighted avg']['precision']
-        recall = report['weighted avg']['recall']
-        f1_score = report['weighted avg']['f1-score']
         
+        # 计算混淆矩阵
+        from sklearn.metrics import confusion_matrix, classification_report
+        cm = confusion_matrix(y_test, y_pred)
+        report = classification_report(y_test, y_pred, output_dict=True)
+        
+        # 构建评估结果字典
+        evaluation_results = {
+            "模型名称": model_name,
+            "混淆矩阵": {
+                "true_negative": int(cm[0][0]),  # 真负例
+                "false_positive": int(cm[0][1]), # 假正例
+                "false_negative": int(cm[1][0]), # 假负例
+                "true_positive": int(cm[1][1])   # 真正例
+            },
+            "评估指标": {
+                "准确率": float(report['accuracy']),
+                "精确率": float(report['1']['precision']),
+                "召回率": float(report['1']['recall']),
+                "F1分数": float(report['1']['f1-score'])
+            }, #标签为1的是正例，也就是标题党
+            "详细分类报告": report
+        }
+        
+        # 保存为JSON文件
+        import json
+        output_path = f"{model_name}_evaluation.json"
+        with open(output_path, 'w', encoding='utf-8') as f:
+            json.dump(evaluation_results, f, ensure_ascii=False, indent=4)
+            
+        print(f"\n{model_name} 评估结果已保存至 {output_path}")
+        accuracy, precision, recall, f1_score=evaluation_results["评估指标"]["准确率"],evaluation_results["评估指标"]["精确率"],evaluation_results["评估指标"]["召回率"],evaluation_results["评估指标"]["F1分数"]
         
         # 预测新闻标题
         results = []
@@ -164,7 +187,9 @@ def main():
     
     # 划分训练集和测试集
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    
+    print("*****X_train.shape:", X_train.shape)
+    print("*****X_test.shape:", X_test.shape)
+    # exit()
     # 逐个训练和预测模型
     models = [
         ("朴素贝叶斯", MultinomialNB),
