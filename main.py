@@ -14,6 +14,7 @@ import gc
 import matplotlib.pyplot as plt
 import tkinter as tk
 from tkinter import ttk
+import random
 
 def load_training_data():  # 加载训练数据集
     base_path = "data/clickbait_detection_dataset"
@@ -138,6 +139,16 @@ def train_and_predict_single_model(model_name, model_class, X_train, X_test, y_t
     return accuracy, precision, recall, f1_score
 
 def main():
+    # 设置随机种子
+    SEED = 42
+    random.seed(SEED)
+    np.random.seed(SEED)
+    torch.manual_seed(SEED)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(SEED)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
     # 加载数据
     final_accuracies = []
     print("加载训练数据...")
@@ -264,10 +275,10 @@ def main():
     autolabel(rects3)
     autolabel(rects4)
 
-    ax.set_ylim(0, 0.95)
+    ax.set_ylim(0, 1)
     # 调整布局以防止标签重叠
     fig.tight_layout()
-
+    plt.savefig('analysis_result.png', dpi=300, bbox_inches='tight')
     # 显示图形
     plt.show()
 

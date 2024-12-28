@@ -6,8 +6,22 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import torch
 from tqdm.auto import tqdm
 import time
+import numpy as np
+import torch
+import random
 
 def init_translator():
+    # 设置随机种子
+    SEED = 42
+    random.seed(SEED)
+    np.random.seed(SEED)
+    torch.manual_seed(SEED)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(SEED)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    
+
     model_path = 'translate-model/zh-en'
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     translate_model = AutoModelForSeq2SeqLM.from_pretrained(model_path)
@@ -140,7 +154,7 @@ def process_excel_files():
     
     # directory = "test_data"
     # directory = "data_backup"
-    directory = "news"
+    directory = "data/news"
     # 过滤临时文件
     excel_files = [f for f in os.listdir(directory) 
                   if f.endswith('.xlsx') and not f.startswith('~$')]
